@@ -1,0 +1,1 @@
+Cargado en {{ number_format((microtime(true) - LARAVEL_START), 3) }} segundos

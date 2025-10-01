@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categorias;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
@@ -18,5 +19,13 @@ class CategoriaController extends Controller
     {
         //Mostramos en formulario
         return view('categorias.agregar-categoria');
+    }
+
+     /**
+     * Display the specified resource.
+     */
+    public function show()
+    {
+        return view('categorias.listar-categoria');
     }
 }

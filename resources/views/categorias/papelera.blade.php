@@ -1,6 +1,6 @@
 @extends('layouts.base')
 
-@section('title', 'Listar Categorias')
+@section('title', 'Papelera')
 
 @section('navbar')
     <x-inicio.mynavbar />
@@ -11,5 +11,5 @@
 @endsection
 
 @section('content')
-    <livewire:categoria.show-categorias />
+    <livewire:categoria.trash />
 @endsection

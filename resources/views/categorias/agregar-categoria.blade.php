@@ -11,5 +11,5 @@
 @endsection
 
 @section('content')
-    <livewire:categorias.guardar-categoria />
+    <livewire:categoria.guardar-categoria />
 @endsection

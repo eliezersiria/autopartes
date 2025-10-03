@@ -4,5 +4,7 @@
 
     <x-menu-item title="Ver Categorias" icon="o-list-bullet" wire:navigate href="{{ route('categoria.show') }}"
         :active="request()->routeIs('categoria.show')" :class="request()->routeIs('categoria.show') ? 'bg-primary text-white' : ''" />
-    <x-menu-item title="Papelera" icon="o-trash" />
+
+    <x-menu-item title="Papelera" icon="o-trash" wire:navigate href="{{ route('categoria.trash') }}"
+        :active="request()->routeIs('categoria.trash')" :class="request()->routeIs('categoria.trash') ? 'bg-primary text-white' : ''" />
 </x-menu>

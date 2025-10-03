@@ -28,4 +28,9 @@ class CategoriaController extends Controller
     {
         return view('categorias.listar-categoria');
     }
+
+    public function trash()
+    {
+        return view('categorias.papelera');
+    }
 }

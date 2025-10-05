@@ -4,10 +4,12 @@ namespace App\Livewire\Categoria;
 use Livewire\Component;
 use App\Models\Categoria;
 use Livewire\WithPagination;
+use Mary\Traits\Toast;
 
 class ShowCategorias extends Component
 {
     use WithPagination;
+    use Toast;
     // Propiedades públicas reactivas
     public $inicio;
     public $fin;
@@ -26,21 +28,27 @@ class ShowCategorias extends Component
     public $actualizado;
     // Cambia entre vista tabla y vista edición
     public $editMode = false;
+    public $showModal = false;
     public function mount()
     {
         $this->categorias = Categoria::all();
     }
 
-    public function delete($id)
+    public function delete()
     {
-        $categoria = Categoria::withTrashed()->find($id);
+        $categoria = Categoria::withTrashed()->find($this->categoria_id);
 
         if ($categoria) {
             $categoria->delete();
             $this->resetPage();
             session()->flash('success', 'El registro fue enviado a la papelera.');
+            $this->showModal = false;
+            // Toast
+            $this->success('El registro fue enviado a la papelera');
+
         } else {
-            session()->flash('error', "No se encontró la categoría con ID {{$id}}");
+            session()->flash('error', "No se encontró la categoría con ID {{$this->categoria_id}}");
+            $this->showModal = false;
         }
     }
 
@@ -74,6 +82,18 @@ class ShowCategorias extends Component
     {
         $this->reset(['categoria_id', 'nombre']);
         $this->editMode = false;
+    }
+    public function abrirModalEliminar($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        $this->categoria_id = $categoria->id;
+        $this->nombre = $categoria->nombre;
+        $this->showModal = true;
+    }
+
+    public function closeModalEliminar()
+    {
+        $this->showModal = false;
     }
     public function render()
     {

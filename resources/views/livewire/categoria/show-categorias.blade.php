@@ -22,8 +22,7 @@
                 @scope('actions', $row)
                 <div class="flex space-x-2 justify-center">
                     <x-button icon="o-pencil" wire:click="edit({{ $row->id }})" spinner class="btn-sm" />
-                    <x-button icon="o-trash" wire:click="delete({{ $row->id }})"
-                        wire:confirm="¿Enviar a la papelera esta categoría {{ $row->nombre }}?" spinner class="btn-sm" />
+                    <x-button icon="o-trash" wire:click="abrirModalEliminar({{ $row->id }})" spinner class="btn-sm" />
                 </div>
                 @endscope
             </x-table>
@@ -41,8 +40,8 @@
 
                         <div class="mt-2 flex gap-2">
                             <!--button  class="btn btn-success" spinner>Actualizar</button-->
-                            <x-button label="Guardar" type="submit" spinner="update" class="btn btn-success" />
-                            <button type="button" wire:click="cancelar" class="btn btn-warning">Cancelar</button>
+                            <x-button label="Guardar" type="submit" class="btn bg-green-700" spinner="update" />
+                            <x-button label="Cancelar" wire:click="cancelar" class="btn btn-warning" spinner />
                         </div>
                         <p class="mt-2 text-sm text-gray-500">Actualizado {{ $actualizado->diffForHumans() }}</p>
                         <p class="mt-2 text-sm text-gray-500">El
@@ -51,8 +50,22 @@
                     </form>
                 </fieldset>
             </div>
-
         @endif
+
+        <!-- Modal para confirmar enviar a la pepelera -->
+        <div>
+            <x-modal wire:model="showModal" title="Confirmar"
+                subtitle="Desea enviar a la papelera la categoría {{$nombre }}?">
+                <x-form>
+                    {{-- Notice we are using now the `actions` slot from `x-form`, not from modal --}}
+                    <x-slot:actions>
+                        <x-button label="Aceptar" icon="o-check" wire:click="delete" spinner="delete" />
+                        <x-button label="Cancelar" icon="o-x-mark" wire:click="closeModalEliminar" />
+                    </x-slot:actions>
+                </x-form>
+            </x-modal>
+        </div>
+
 
 
     </div>

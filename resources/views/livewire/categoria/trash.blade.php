@@ -19,11 +19,12 @@
         @if ($categorias->isNotEmpty())
             @foreach($categorias as $cat)
                 <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                    <x-card title="{{ $cat->nombre }}" subtitle="Eliminado el {{ $cat->deleted_at->translatedFormat('l d \d\e F \d\e Y h:i a') }}">
-                        <x-button class="bg-green-700 hover:bg-green-600 text-white" label="Restaurar" icon="o-arrow-path"
-                            wire:click="restore({{ $cat->id }})" spinner/>
-                        <x-button class="bg-red-700 hover:bg-red-600 text-white" label="Eliminar definitivamente" icon="o-trash"
-                            wire:click="forceDelete({{ $cat->id }})" wire:confirm="¿Estás seguro de que deseas eliminar este registro?" spinner/>
+                    <x-card title="{{ $cat->nombre }}"
+                        subtitle="Eliminado el {{ $cat->deleted_at->translatedFormat('l d \d\e F \d\e Y h:i a') }}">
+                        <x-button class="btn-sm bg-green-700 hover:bg-green-600 text-white" label="Restaurar"
+                            icon="o-arrow-path" wire:click="restore({{ $cat->id }})" spinner />
+                        <x-button class="btn-sm bg-red-700 hover:bg-red-600 text-white" label="Eliminar definitivamente"
+                            wire:click="abrirModalForceDelete({{ $cat->id }}, '{{ $cat->nombre }}')" icon="o-trash" spinner />
                     </x-card>
                 </fieldset>
             @endforeach
@@ -32,4 +33,16 @@
         @endif
 
     </x-card>
+
+    <div>
+        <x-modal wire:model="showModalForceDelete" title="Eliminar"
+            subtitle="Desea eliminar completamente la categoría {{$catNombre }}?">
+            <x-slot:actions>
+                <x-button class="btn-sm bg-red-700 hover:bg-red-600 text-white" label="Aceptar"
+                    wire:click="forceDelete({{ $idSeleccionado }})" icon="o-check" spinner="forceDelete" />
+                <x-button class="btn btn-sm" label="Cancelar" wire:click="$set('showModalForceDelete', false)"
+                    icon="o-x-circle" />
+            </x-slot:actions>
+        </x-modal>
+    </div>
 </div>

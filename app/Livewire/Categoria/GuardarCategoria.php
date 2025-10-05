@@ -4,9 +4,11 @@ namespace App\Livewire\Categoria;
 
 use Livewire\Component;
 use App\Models\Categoria;
+use Mary\Traits\Toast;
 
 class GuardarCategoria extends Component
 {
+    use Toast;
     public $nombre;
     // Reglas de validación
     protected $rules = ['nombre' => 'required|string|max:255|unique:categorias,nombre'];
@@ -21,6 +23,7 @@ class GuardarCategoria extends Component
         // Limpiar el campo
         $this->nombre = '';
         // Mensaje de éxito
+        $this->success('Categoría guardada correctamente!');
         session()->flash('message', 'Categoría guardada correctamente!');
     }
 

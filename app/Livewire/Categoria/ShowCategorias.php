@@ -76,7 +76,8 @@ class ShowCategorias extends Component
         $this->reset(['categoria_id', 'nombre']);
         $this->categorias = Categoria::all();
         $this->editMode = false; // volver a la tabla
-        session()->flash('success', 'El registro fue actualizado.');
+        $this->success('El registro fue actualizado');
+        session()->flash('success', 'El registro fue actualizado');
     }
     public function cancelar()
     {

@@ -5,6 +5,7 @@ use App\Livewire\Login;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProveedorController;
 
 
 Route::get('/', function () { return view('welcome'); });
@@ -18,6 +19,9 @@ Route::get('/categorias/create', [CategoriaController::class, 'create'])->name('
 Route::get('/categorias/show',   [CategoriaController::class, 'show'])->name('categoria.show')->middleware('auth');
 Route::get('/categorias/trash',  [CategoriaController::class, 'trash'])->name('categoria.trash')->middleware('auth');
 
+Route::get('/proveedores',        [ProveedorController::class, 'index'])->name('proveedores')->middleware('auth');
+Route::get('/proveedores/create', [ProveedorController::class, 'create'])->name('proveedores.crear')->middleware('auth');
+Route::get('/proveedores/show',   [ProveedorController::class, 'show'])->name('proveedores.show')->middleware('auth');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

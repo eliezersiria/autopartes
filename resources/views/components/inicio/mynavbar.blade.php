@@ -1,16 +1,6 @@
 <x-header title="Bienvenido" :subtitle="view('components.tiempo-carga')" separator>
   <x-slot:actions>
 
-    <!--div class="join">
-      <div>
-        <label class="input validator join-item">
-          @svg('heroicon-o-magnifying-glass', 'w-5 h-5')
-          <x-input icon="o-bolt" placeholder="Buscar..." />
-        </label>
-      </div>
-      <button class="btn btn-primary join-item">Buscar</button>
-    </div-->
-
     <x-card>
       <ul class="menu menu-horizontal bg-base-200 rounded-box">
         <x-menu-item wire:navigate icon="o-home" href="{{ route('dashboard') }}"
@@ -21,6 +11,11 @@
         <x-menu-item icon="o-cube" wire:navigate href="{{ route('categoria') }}"
           :active="request()->routeIs('categoria*')" :class="request()->routeIs('categoria*') ? 'bg-primary text-white' : ''">
           Categorías
+        </x-menu-item>
+
+        <x-menu-item icon="o-user-group" wire:navigate href="{{ route('proveedores') }}"
+          :active="request()->routeIs('proveedores*')" :class="request()->routeIs('proveedores*') ? 'bg-primary text-white' : ''">
+          Proveedores
         </x-menu-item>
 
         <x-menu-item icon="o-cog-8-tooth" href="#">Configuración</x-menu-item>

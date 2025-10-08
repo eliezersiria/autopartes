@@ -34,7 +34,7 @@ class Trash extends Component
     {
         Categoria::withTrashed()->find($id)->forceDelete(); // Elimina permanentemente
         $this->showModalForceDelete = false;
-        $this->warning('El registro fue eliminado permanentemente');        
+        $this->warning('Registro eliminado permanentemente', position: 'toast-bottom toast-start');        
         session()->flash('success', 'El Registro fue eliminado permanentemente.');
     }
     public function render()

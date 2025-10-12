@@ -4,6 +4,7 @@
             <p class="mb-2 text-sm text-gray-500">
                 Tiempo de consulta: {{ $tiempo }} segundos | Filas cargadas: {{ $numeroFilas }}
             </p>
+
             @if (session()->has('success'))
                 <x-categorias.mensajes-success mensaje="{{ session('success') }}" />
             @endif
@@ -36,30 +37,20 @@
                                     icon="o-pencil" tooltip="Editar" wire:click="edit({{ $proveedor->id }})" spinner />
                             </td>
                             <td>
-                                <x-button class="btn btn-sm bg-red-700 hover:bg-red-600 text-white px-2 py-1 text-xs"
-                                    icon="o-trash" tooltip="Enviar a la Papelera" />
+                                <x-button class="btn btn-sm bg-yellow-700 hover:bg-red-600 text-white px-2 py-1 text-xs"
+                                    icon="o-trash" tooltip="Enviar a la Papelera" wire:click="sendTrash({{ $proveedor->id }})"
+                                    spinner="sendTrash({{ $proveedor->id }})" />
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
 
-
-            <div class="fab">
-                <!-- a focusable div with tabindex is necessary to work on all browsers. role="button" is necessary for accessibility -->
-                <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">F</div>
-
-                <!-- buttons that show up when FAB is open -->
-                <button class="btn btn-lg btn-circle">A</button>
-                <button class="btn btn-lg btn-circle">B</button>
-                <button class="btn btn-lg btn-circle">C</button>
-            </div>
-            
         @else
             <!-- Formulario de edición -->
             <div class="p-4 rounded w-full lg:w-1/2">
-                <x-button label="Regresar" class="btn btn-sm" icon="s-arrow-left" wire:click="regresar"
-                    spinner="regresar" />
+                <x-button label="Regresar" class="btn btn-sm" icon="s-arrow-left" link="{{route('proveedores.show')}}" />
+
                 <hr class="border-t border-gray-300 my-4">
                 <h2 class="font-bold mb-2">Editar Proveedor</h2>
                 <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
@@ -67,7 +58,7 @@
                         <x-form wire:submit="updateProveedor">
                             <x-input label="Nombre" wire:model="nombre" />
                             <x-input label="Telefono" wire:model="telefono" />
-                            <x-input label="Email" wire:model="email" />
+                            <x-input label="Email" wire:model="email" disabled/>
                             <x-textarea label="Direccion" wire:model="direccion" hint="Max 1000 caracteres" rows="5" />
                             @error('nombre')
                                 <div class="text-red-500 text-sm">{{ $message }}</div>
@@ -88,9 +79,30 @@
                     </div>
                 </fieldset>
             </div>
-
         @endif
-    </div>
+
+        <!-- MODAL DE ENVIAR A LA PAPELERA-->
+        <div>
+            <x-modal wire:model="showModalSendTrash" title="Confirmar"
+                subtitle="Desea enviar a la papelera la categoría {{$nombre }}?">
+                <x-form>
+                    {{-- Notice we are using now the `actions` slot from `x-form`, not from modal --}}
+                    <x-slot:actions>
+                        <x-button label="Aceptar" class="btn bg-yellow-700 hover:bg-red-600" icon="o-check"
+                            wire:click="delete" spinner="delete" />
+                        <x-button label="Cancelar" icon="o-x-mark" wire:click="closeModalSendTrash"
+                            spinner="closeModalSendTrash" />
+                    </x-slot:actions>
+                </x-form>
+            </x-modal>
+        </div>
+
+
+
+
+
+    </div><!-- Div Overflow -->
+
 
 
 </div>

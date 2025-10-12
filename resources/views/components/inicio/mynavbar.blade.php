@@ -18,6 +18,11 @@
           Proveedores
         </x-menu-item>
 
+        <x-menu-item icon="o-building-storefront" wire:navigate href="{{ route('repuestos') }}"
+          :active="request()->routeIs('repuestos*')" :class="request()->routeIs('repuestos*') ? 'bg-primary text-white' : ''">
+          Repuestos
+        </x-menu-item>
+
         <x-menu-item icon="o-cog-8-tooth" href="#">Configuración</x-menu-item>
       </ul>
     </x-card>

@@ -20,6 +20,7 @@ class ShowProveedores extends Component
     public $numeroFilas;
     public $tiempo;
     public $editMode = false;
+    public $showModalSendTrash = false;
     public function mount()
     {
         $this->proveedores = Proveedor::all();
@@ -42,7 +43,7 @@ class ShowProveedores extends Component
         $this->validate([
             'nombre' => 'required|string',
             'telefono' => 'required|digits_between:8,15|numeric',
-            'email' => 'required|email|unique:proveedors,email',
+            //'email' => 'required|email|unique:proveedors,email',
             'direccion' => 'required|string'
         ]);
 
@@ -50,7 +51,7 @@ class ShowProveedores extends Component
         $proveedor->update([
             'nombre' => $this->nombre,
             'telefono' => $this->telefono,
-            'email' => $this->email,
+            //'email' => $this->email,
             'direccion' => $this->direccion
         ]);
 
@@ -67,10 +68,34 @@ class ShowProveedores extends Component
         $this->editMode = false;
     }
 
-    public function regresar()
+    public function sendTrash($id)
     {
-        $this->reset(['proveedor_id', 'nombre', 'telefono', 'email', 'direccion']);
-        $this->editMode = false;
+        $proveedor = Proveedor::findOrFail($id);
+        $this->proveedor_id = $proveedor->id;
+        $this->nombre = $proveedor->nombre;
+        $this->showModalSendTrash = true;
+    }
+
+    public function closeModalSendTrash()
+    {
+        $this->showModalSendTrash = false;
+    }
+    public function delete()
+    {
+        $proveedor = Proveedor::find($this->proveedor_id);
+
+        if ($proveedor) {
+            $proveedor->delete();
+            $this->reset();
+            session()->flash('success', 'El registro fue enviado a la papelera.');
+            $this->showModalSendTrash = false;
+            // Toast
+            $this->success('El registro fue enviado a la papelera');
+
+        } else {
+            session()->flash('error', "No se encontró la categoría con ID {{$this->categoria_id}}");
+            $this->showModalSendTrash = false;
+        }
     }
     public function render()
     {

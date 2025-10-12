@@ -36,7 +36,7 @@ class ShowCategorias extends Component
 
     public function delete()
     {
-        $categoria = Categoria::withTrashed()->find($this->categoria_id);
+        $categoria = Categoria::find($this->categoria_id);
 
         if ($categoria) {
             $categoria->delete();

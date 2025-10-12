@@ -8,7 +8,6 @@
                 <x-input label="Contraseña" type="password" wire:model="password" placeholder="Escribe tu contraseña" />
 
                 <x-slot:actions>
-                    <x-button label="Cancel" />
                     <x-button label="Ingresar" class="btn-primary" type="submit" spinner="login" />
                 </x-slot:actions>
             </x-form>

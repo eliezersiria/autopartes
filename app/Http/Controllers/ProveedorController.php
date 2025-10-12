@@ -23,6 +23,10 @@ class ProveedorController extends Controller
         return view('proveedor.agregar-proveedor');
     }
 
+    public function trash()
+    {
+        return view('proveedor.trash-proveedor');
+    }
     /**
      * Store a newly created resource in storage.
      */

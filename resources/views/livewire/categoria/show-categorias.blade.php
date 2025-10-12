@@ -21,8 +21,8 @@
             <x-table :headers="$headers" :rows="$categorias" with-pagination striped>
                 @scope('actions', $row)
                 <div class="flex space-x-2 justify-center">
-                    <x-button icon="o-pencil" wire:click="edit({{ $row->id }})" spinner class="btn-sm" />
-                    <x-button icon="o-trash" wire:click="abrirModalEliminar({{ $row->id }})" spinner class="btn-sm" />
+                    <x-button icon="o-pencil" wire:click="edit({{ $row->id }})" spinner="edit({{ $row->id }})" class="btn-sm" />
+                    <x-button icon="o-trash" wire:click="abrirModalEliminar({{ $row->id }})" spinner="abrirModalEliminar({{ $row->id }})" class="btn-sm" />
                 </div>
                 @endscope
             </x-table>

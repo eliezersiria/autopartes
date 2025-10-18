@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Livewire\Repuesto;
+use Illuminate\Database\Eloquent\Collection;
+//use Illuminate\Support\Collection;
 use Mary\Traits\Toast;
 use App\Models\Repuesto;
 use App\Models\Categoria;
@@ -10,7 +12,11 @@ use App\Models\RepuestoVehiculo;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+//use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Imagick\Driver;
 
 class AgregarRepuesto extends Component
 {
@@ -18,7 +24,7 @@ class AgregarRepuesto extends Component
     use WithFileUploads;
     public $categorias = [];
     public $proveedores = [];
-    public $vehiculos = [];
+    public Collection $vehiculos;
     public $codigo;
     public $nombre;
     public $marca;
@@ -32,7 +38,29 @@ class AgregarRepuesto extends Component
     public $proveedor_id;
     public $vehiculo_id;
     public $repuesto_id;
+    public $fileKey = 1;
 
+    public function search(string $value = '')
+    {
+        $selectedOption = collect();
+
+        if ($this->vehiculo_id) {
+            $selectedOption = Vehiculo::where('id', $this->vehiculo_id)->get();
+        }
+
+        $this->vehiculos = Vehiculo::query()
+            ->where('marca', 'like', "%$value%")
+            ->orWhere('modelo', 'like', "%$value%")
+            ->orWhere('anio', 'like', "%$value%")
+            //->take(5)
+            ->get()
+            ->merge($selectedOption)
+            ->map(fn($vehiculo) => [
+                'name' => "$vehiculo->marca $vehiculo->modelo $vehiculo->anio",
+                'id' => $vehiculo->id,
+            ]);
+        ;
+    }
     public function updatedPrecioCompra($value)
     {
         $this->precio_venta = is_numeric($value) ? $value * 1.4 : null;
@@ -41,16 +69,19 @@ class AgregarRepuesto extends Component
     {
         // Genera el slug automáticamente cada vez que se cambia el nombre
         $this->url = Str::slug($value);
-         // Opcional: asegurar que sea único
+        // Opcional: asegurar que sea único
         $contador = 1;
         $slugOriginal = $this->url;
         while (Repuesto::where('url', $this->url)->exists()) {
             $this->url = $slugOriginal . '-' . $contador++;
         }
-
     }
     public function mount()
     {
+        $this->vehiculos = collect();
+
+        $this->search();
+
         $this->categorias = Categoria::all()->map(fn($categoria) => [
             'name' => $categoria->nombre,
             'id' => $categoria->id,
@@ -60,12 +91,6 @@ class AgregarRepuesto extends Component
             'name' => $proveedor->nombre,
             'id' => $proveedor->id,
         ])->toArray();
-
-        $this->vehiculos = Vehiculo::orderBy('marca')->get()->map(fn($vehiculo) => [
-            'name' => "$vehiculo->marca $vehiculo->modelo $vehiculo->anio",
-            'id' => $vehiculo->id,
-        ])->toArray();
-
     }
 
     protected $rules = [
@@ -77,7 +102,7 @@ class AgregarRepuesto extends Component
         'precio_venta' => 'required|numeric',
         'stock' => 'required|string',
         'url' => 'required|string|unique:repuestos,url',
-        'thumb' => 'required|image|max:2048', // máximo 2MB
+        'thumb' => 'required|image|max:2048', // 1MB máximo
         'categoria_id' => 'required',
         'proveedor_id' => 'required',
         'vehiculo_id' => 'required'
@@ -85,11 +110,24 @@ class AgregarRepuesto extends Component
 
     public function saveRepuesto()
     {
-
         $this->validate();
 
-        // Guardar imagen si se subió
-        $path = $this->thumb?->store('images', 'public');
+        //$path = $this->thumb?->store('images', 'public');
+
+        if ($this->thumb) {
+            // Guardar imagen si se subió 
+            $filename = time().Str::random() . ".webp";
+            // create new manager instance with desired driver
+            $manager = new ImageManager(new Driver());
+            // read image
+            $image = $manager->read($this->thumb->getRealPath());
+            //Resize pero sin perder el ratio
+            $image = $image->scaleDown(height: 192)->toWebp(60);
+            //Guardamos
+            $image->save(public_path("storage/images/$filename"));
+
+            $path = "images/$filename";
+        }
 
         $repuesto = Repuesto::create([
             'codigo' => $this->codigo,
@@ -113,9 +151,9 @@ class AgregarRepuesto extends Component
             'vehiculo_id' => $this->vehiculo_id,
         ]);
 
-
-        $this->reset('thumb');
-        //$this->reset();
+        $this->reset();
+        $this->mount(); // Volver a inicializar como en el mount
+        $this->fileKey = rand(); // Cambiar la key fuerza el re-render
         session()->flash('message', "Repuesto guardado correctamente!");
         $this->success('Repuesto guardado correctamente');
     }

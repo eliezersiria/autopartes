@@ -31,7 +31,7 @@ class ShowCategorias extends Component
     public $showModal = false;
     public function mount()
     {
-        $this->categorias = Categoria::all();
+        $this->categorias = Categoria::paginate(10);
     }
 
     public function delete()
@@ -74,7 +74,7 @@ class ShowCategorias extends Component
 
         // resetear estado
         $this->reset(['categoria_id', 'nombre']);
-        $this->categorias = Categoria::all();
+        $this->categorias = Categoria::paginate(10);
         $this->editMode = false; // volver a la tabla
         $this->success('El registro fue actualizado');
         session()->flash('success', 'El registro fue actualizado');
